@@ -24,7 +24,7 @@ def handler(event, context):
     # Ask DynamoDB for the item with that session code
     response = table.get_item(Key={'session_code': session_code})
     
-    # If no item found — wrong code or already expired
+    # If no item found , wrong code or already expired
     if 'Item' not in response:
         return {
             'statusCode': 404,

@@ -10,10 +10,10 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
   bucket = aws_s3_bucket.frontend.id
 
   index_document {
-    suffix = "index.html"
+    suffix = "index.js"
   }
 
   error_document {
-    key = "error.html"
+    key = "error.js"
   }
 }
