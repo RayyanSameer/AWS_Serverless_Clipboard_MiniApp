@@ -1,9 +1,13 @@
-#Holds the logs for cloudwatch 
+# Holds the access logs for the frontend S3 bucket
 
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "logging" {
-  bucket = "access-logging-bucket"
+  bucket = "clipshare-access-logs-rayyan-2024"
+
+  tags = {
+    Project = "clipshare"
+  }
 }
 
 data "aws_iam_policy_document" "logging_bucket_policy" {
@@ -23,6 +27,12 @@ data "aws_iam_policy_document" "logging_bucket_policy" {
 }
 
 resource "aws_s3_bucket_policy" "logging" {
-  bucket = aws_s3_bucket.logging.bucket
+  bucket = aws_s3_bucket.logging.id
   policy = data.aws_iam_policy_document.logging_bucket_policy.json
+}
+
+resource "aws_s3_bucket_logging" "frontend" {
+  bucket        = aws_s3_bucket.frontend.id
+  target_bucket = aws_s3_bucket.logging.id
+  target_prefix = "log/"
 }

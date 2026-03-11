@@ -39,16 +39,17 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
 # Package send.py
 data "archive_file" "send_lambda" {
   type        = "zip"
-  source_file = "${path.module}/lambda/send.py"
-  output_path = "${path.module}/lambda/send.zip"
+  source_file = "${path.module}/../backend/send.py"
+  output_path = "${path.module}/../backend/send.zip"
 }
 
-# Package get.py
 data "archive_file" "get_lambda" {
   type        = "zip"
-  source_file = "${path.module}/lambda/get.py"
-  output_path = "${path.module}/lambda/get.zip"
+  source_file = "${path.module}/../backend/get.py"
+  output_path = "${path.module}/../backend/get.zip"
 }
+
+
 
 # Send Lambda
 resource "aws_lambda_function" "send" {
@@ -57,7 +58,7 @@ resource "aws_lambda_function" "send" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "send.handler"
   runtime          = "python3.12"
-  code_sha256      = data.archive_file.send_lambda.output_base64sha256
+
 
   environment {
     variables = {
@@ -77,7 +78,7 @@ resource "aws_lambda_function" "get" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "get.handler"
   runtime          = "python3.12"
-  code_sha256      = data.archive_file.get_lambda.output_base64sha256
+  
 
   environment {
     variables = {
