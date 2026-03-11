@@ -26,19 +26,3 @@ resource "aws_s3_bucket_policy" "logging" {
   bucket = aws_s3_bucket.logging.bucket
   policy = data.aws_iam_policy_document.logging_bucket_policy.json
 }
-
-resource "aws_s3_bucket" "logging" {
-  bucket = "access-logging-bucket"
-}
-
-resource "aws_s3_bucket_logging" "example" {
-  bucket = aws_s3_bucket.example.bucket
-
-  target_bucket = aws_s3_bucket.logging.bucket
-  target_prefix = "log/"
-  target_object_key_format {
-    partitioned_prefix {
-      partition_date_source = "EventTime"
-    }
-  }
-}
