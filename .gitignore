@@ -3,3 +3,8 @@
 *.zip
 venv/
 .venv/
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
