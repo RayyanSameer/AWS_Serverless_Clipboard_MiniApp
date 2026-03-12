@@ -49,7 +49,7 @@ data "archive_file" "get_lambda" {
   output_path = "${path.module}/../backend/get.zip"
 }
 
-# In lambda.tf add:
+
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
@@ -75,6 +75,23 @@ resource "aws_lambda_function" "send" {
   }
 }
 
+resource "aws_lambda_permission" "send" {
+  statement_id  = "AllowAPIGatewaySend"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.send.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.clipshare.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "get" {
+  statement_id  = "AllowAPIGatewayGet"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.cli}"
+}
+
+ 
 # Get Lambda
 resource "aws_lambda_function" "get" {
   filename         = data.archive_file.get_lambda.output_path
@@ -93,6 +110,8 @@ resource "aws_lambda_function" "get" {
   tags = {
     Project = "clipshare"
   }
+
+  
 
   
 }
