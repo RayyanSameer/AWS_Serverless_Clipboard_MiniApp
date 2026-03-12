@@ -2,7 +2,7 @@
 // Two functions  send encrypted data to Lambda, get encrypted data from Lambda
 // No crypto here. Just network. computers going boop beep.
 
-const API_URL = 'YOUR_API_GATEWAY_URL'
+const API_URL = 'https://vvuqy9b9ne.execute-api.ap-south-1.amazonaws.com'
 
 export async function sendToLambda(sessionCode, ciphertextB64, ivB64) {
     // POST the already-encrypted data to Lambda
