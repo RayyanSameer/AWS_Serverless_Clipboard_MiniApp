@@ -9,13 +9,13 @@
 #Create a new entry in the table with those three pieces of info.
 #- : "Now" + 30 minutes. 
 #- Tag the entry with that expiration timestamp so it self-destructs later.
-
+import json, boto3, os, time
 dynamodb = boto3.resource('dynamodb')
 
 table = dynamodb.Table(os.environ['TABLE_NAME'])
 
 def handler(event,context):
-    body = json.loads(event[body])
+    body = json.loads(event['body'])
 
     session_code = body['session_code']
     ciphertext   = body['ciphertext']

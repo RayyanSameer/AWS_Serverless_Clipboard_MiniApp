@@ -5,6 +5,7 @@
 # Query that specific code linked text only
 # Return the encyppted text for local decyption on device 
 
+import json, boto3, os, time
 #Define the resources 
 dynamodb = boto3.resource('dynamodb')
 

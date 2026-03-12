@@ -49,7 +49,11 @@ data "archive_file" "get_lambda" {
   output_path = "${path.module}/../backend/get.zip"
 }
 
-
+# In lambda.tf add:
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
 
 # Send Lambda
 resource "aws_lambda_function" "send" {
@@ -89,4 +93,6 @@ resource "aws_lambda_function" "get" {
   tags = {
     Project = "clipshare"
   }
+
+  
 }
