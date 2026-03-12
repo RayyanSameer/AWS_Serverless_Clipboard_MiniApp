@@ -17,3 +17,5 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
     key = "error.js"
   }
 }
+
+//now as per the roadmap i had devised , i'm gonna add a CDN here to help others see this 
