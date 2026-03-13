@@ -39,3 +39,23 @@ export async function getFromLambda(sessionCode) {
     return response.json()
     // returns { ciphertext, iv } still encrypted, caller handles decryption
 }
+
+const cache = new Map()
+const CACHE_TTL = 10 * 60 * 1000  // 10 minutes in ms
+
+export async function getFromLambda(sessionCode) {
+  const cached = cache.get(sessionCode)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data
+  }
+
+  const response = await fetch(`${API_URL}/get?session_code=${sessionCode}`)
+  if (!response.ok) {
+    if (response.status === 404) throw new Error('Code not found or expired.')
+    throw new Error('Failed to retrieve message.')
+  }
+
+  const data = await response.json()
+  cache.set(sessionCode, { data, timestamp: Date.now() })
+  return data
+} // this fella prevents spamming 

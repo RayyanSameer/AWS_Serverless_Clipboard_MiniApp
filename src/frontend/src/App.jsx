@@ -5,13 +5,14 @@ import { sendToLambda, getFromLambda } from './api.js'
 export default function App() {
 
   const [mode, setMode] = useState('send')
-  const [text, setText] = useState('')
+  const [text, setText] = useState('') 
   const [sessionCode] = useState(() => generateCode())
   const [generatedCode, setGeneratedCode] = useState('')
   const [inputCode, setInputCode] = useState('')
   const [receivedText, setReceivedText] = useState('')
   const [status, setStatus] = useState('')
-  const [showCode, setShowCode] = useState(false)  // ← moved here
+  const [showCode, setShowCode] = useState(false)
+  const [fetching, setFetching] = useState(false)
 
   async function handleSend() {
     if (!text.trim()) { setStatus('Nothing to send.'); return }
@@ -28,7 +29,10 @@ export default function App() {
   }
 
   async function handleReceive() {
+    if (fetching) return
     if (!inputCode.trim()) { setStatus('Enter a session code first.'); return }
+    setFetching(true)
+    setTimeout(() => setFetching(false), 5000)
     try {
       setStatus('Fetching...')
       const { ciphertext, iv } = await getFromLambda(inputCode)
@@ -38,6 +42,8 @@ export default function App() {
       setStatus('')
     } catch (err) {
       setStatus('Error: ' + err.message)
+    } finally {
+      setFetching(false)
     }
   }
 
@@ -123,7 +129,9 @@ export default function App() {
               {showCode ? 'Hide' : 'Show'}
             </button>
           </div>
-          <button onClick={handleReceive}>Get Message</button>
+          <button onClick={handleReceive} disabled={fetching}>
+            {fetching ? 'Please wait...' : 'Get Message'}
+          </button>
           {receivedText && (
             <div style={{ marginTop: '24px' }}>
               <p>Decrypted message:</p>

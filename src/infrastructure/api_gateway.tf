@@ -71,3 +71,16 @@ resource "aws_lambda_permission" "get" {
 }
 
 #uwu
+
+#Thotte safety mechanisim
+
+resource "aws_apigatewayv2_stage" "clipshare" {
+  api_id      = aws_apigatewayv2_api.clipshare.id
+  name        = "$default"
+  auto_deploy = true
+
+  default_route_settings {
+    throttling_rate_limit  = 10   # max 10 requests per second
+    throttling_burst_limit = 20   # max burst of 20
+  }
+}
