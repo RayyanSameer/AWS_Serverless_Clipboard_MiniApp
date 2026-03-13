@@ -1,5 +1,3 @@
-#the main file always houses the providers 
-
 terraform {
   required_providers {
     aws = {
@@ -7,10 +5,16 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "clipshare-tfstate-rayyan"
+    key            = "clipshare/terraform.tfstate"
+    region         = "ap-south-1"
+    dynamodb_table = "clipshare-tf-locks"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
   region = var.aws_region
 }
-
-# i am gonna be using AWS 
