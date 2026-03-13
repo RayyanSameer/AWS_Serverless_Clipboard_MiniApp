@@ -4,7 +4,6 @@ import { sendToLambda, getFromLambda } from './api.js'
 
 export default function App() {
 
-  // st-
   const [mode, setMode] = useState('send')
   const [text, setText] = useState('')
   const [sessionCode] = useState(() => generateCode())
@@ -12,23 +11,15 @@ export default function App() {
   const [inputCode, setInputCode] = useState('')
   const [receivedText, setReceivedText] = useState('')
   const [status, setStatus] = useState('')
+  const [showCode, setShowCode] = useState(false)  // ← moved here
 
-  // sender
-  // 1. Encrypt text in browser
-  // 2. POST ciphertext + IV + session code to Lambda
-  // 3. Lambda writes to DynamoDBnever sees plaintext
   async function handleSend() {
-    if (!text.trim()) {
-      setStatus('Nothing to send.')
-      return
-    }
+    if (!text.trim()) { setStatus('Nothing to send.'); return }
     try {
       setStatus('Encrypting...')
       const { ciphertextB64, ivB64 } = await encryptText(text, sessionCode)
-
       setStatus('Sending...')
       await sendToLambda(sessionCode, ciphertextB64, ivB64)
-
       setGeneratedCode(sessionCode)
       setStatus('Sent.')
     } catch (err) {
@@ -36,22 +27,13 @@ export default function App() {
     }
   }
 
-  // reciver
-  // 1. GET ciphertext + IV from Lambda using session code
-  // 2. Decrypt in browser using same session code
-  // 3. Display plaintext Lambda never sees plaintext
   async function handleReceive() {
-    if (!inputCode.trim()) {
-      setStatus('Enter a session code first.')
-      return
-    }
+    if (!inputCode.trim()) { setStatus('Enter a session code first.'); return }
     try {
       setStatus('Fetching...')
       const { ciphertext, iv } = await getFromLambda(inputCode)
-
       setStatus('Decrypting...')
       const plaintext = await decryptText(ciphertext, iv, inputCode)
-
       setReceivedText(plaintext)
       setStatus('')
     } catch (err) {
@@ -59,7 +41,6 @@ export default function App() {
     }
   }
 
-  
   return (
     <div style={{ maxWidth: '600px', margin: '40px auto', fontFamily: 'sans-serif', padding: '0 20px' }}>
       <h1>ClipShare</h1>
@@ -109,15 +90,40 @@ export default function App() {
       {/* Recipient */}
       {mode === 'receive' && (
         <div>
-          <input
-            type="text"
-            placeholder="Enter session code"
-            value={inputCode}
-            onChange={e => setInputCode(e.target.value.toUpperCase())}
-            style={{ width: '100%', padding: '8px', marginBottom: '8px', fontSize: '18px', letterSpacing: '2px' }}
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showCode ? 'text' : 'password'}
+              placeholder="Enter session code"
+              value={inputCode}
+              onChange={e => setInputCode(e.target.value.toUpperCase())}
+              style={{
+                width: '100%',
+                padding: '8px',
+                paddingRight: '80px',
+                marginBottom: '8px',
+                fontSize: '18px',
+                letterSpacing: '2px',
+                boxSizing: 'border-box'
+              }}
+            />
+            <button
+              onClick={() => setShowCode(!showCode)}
+              style={{
+                position: 'absolute',
+                right: '8px',
+                top: '50%',
+                transform: 'translateY(-60%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                color: '#666'
+              }}
+            >
+              {showCode ? 'Hide' : 'Show'}
+            </button>
+          </div>
           <button onClick={handleReceive}>Get Message</button>
-
           {receivedText && (
             <div style={{ marginTop: '24px' }}>
               <p>Decrypted message:</p>
