@@ -1,9 +1,9 @@
 import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
-  testDir: '.',
+  testDir: '../tests',
   use: {
-    baseURL: 'https://your-cloudfront-url.cloudfront.net', // or localhost if running locally
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173',
   },
   timeout: 30000,
 })
