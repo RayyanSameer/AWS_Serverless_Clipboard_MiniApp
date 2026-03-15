@@ -58,7 +58,7 @@ test.describe('ClipShare E2E', () => {
 
     // Wait for decrypted message to appear
     await expect(
-      recipientPage.getByDisplayValue('e2e test message')
+      recipientPage.locator('textarea').filter({ hasText: 'e2e test message' })
     ).toBeVisible({ timeout: 10000 })
 
     await senderPage.close()
