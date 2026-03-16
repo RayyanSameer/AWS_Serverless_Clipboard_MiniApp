@@ -4,7 +4,7 @@
 
 **Live:** https://clipshare.online
 
-![ClipShare Screenshot](./docs/Clipshare_Screenshot)
+![ClipShare Screenshot](./docs/Clipshare_Screenshot.png)
 
 ClipShare allows users to securely share text snippets across devices without needing an account. By leveraging client-side encryption, a serverless AWS architecture, and automated data expiration, ClipShare guarantees that your data remains entirely private and mathematically inaccessible to the backend infrastructure.
 
