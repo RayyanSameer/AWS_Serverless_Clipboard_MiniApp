@@ -23,11 +23,13 @@ export default function App() {
       await sendToLambda(sessionCode, ciphertextB64, ivB64)
       setGeneratedCode(sessionCode)
       setStatus('Sent.')
+      setText('')
     } catch (err) {
       setStatus('Error: ' + err.message)
     }
   }
 
+  
   async function handleReceive() {
     if (fetching) return
     if (!inputCode.trim()) { setStatus('Enter a session code first.'); return }

@@ -2,7 +2,7 @@
 // Two functions: send encrypted data to Lambda, get encrypted data from Lambda
 // No crypto here. Just network. computers going boop beep.
 
-const API_URL = 'https://9x61l7mc7l.execute-api.ap-south-1.amazonaws.com'
+const API_URL = import.meta.env.VITE_API_URL
 
 const cache = new Map()
 const CACHE_TTL = 10 * 60 * 1000  // 10 minutes in ms

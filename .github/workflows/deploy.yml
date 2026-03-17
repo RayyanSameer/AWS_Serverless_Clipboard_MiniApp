@@ -23,6 +23,8 @@ jobs:
 
       - name: Build frontend
         working-directory: src/frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
 
       - name: Run E2E tests
@@ -37,8 +39,7 @@ jobs:
           aws-region: ap-south-1
 
       - name: Deploy to S3
-        run: |
-          aws s3 sync src/frontend/dist/ s3://clipshare-frontend-rayyan --delete
+        run: aws s3 sync src/frontend/dist/ s3://clipshare-frontend-rayyan --delete
 
       - name: Invalidate CloudFront cache
         run: |
