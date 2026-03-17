@@ -29,6 +29,8 @@ jobs:
 
       - name: Run E2E tests
         working-directory: src/frontend
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ secrets.PLAYWRIGHT_BASE_URL }}
         run: npx playwright test --config=playwright.config.js
 
       - name: Configure AWS credentials
