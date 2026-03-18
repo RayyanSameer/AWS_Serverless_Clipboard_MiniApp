@@ -2,11 +2,15 @@
 resource "aws_apigatewayv2_api" "clipshare" {
   name          = "clipshare-api"
   protocol_type = "HTTP"
+  #CORS
+
   cors_configuration {
-    allow_origins = ["*"]
-    allow_methods = ["GET", "POST"]
-    allow_headers = ["Content-Type"]
-  }
+    allow_origins  = ["*"]
+    allow_methods  = ["GET", "POST", "OPTIONS"]
+    allow_headers  = ["Content-Type"]
+    max_age        = 300
+}
+  
 }
 
 # Stage with throttling
@@ -68,3 +72,4 @@ resource "aws_lambda_permission" "get" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.clipshare.execution_arn}/*/*"
 }
+
