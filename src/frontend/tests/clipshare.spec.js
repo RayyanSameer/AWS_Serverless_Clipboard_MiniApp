@@ -6,7 +6,7 @@ test.describe('ClipShare E2E', () => {
     await page.goto('/')
 
     // Title is visible
-    await expect(page.getByText('ClipShare')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'ClipShare', exact: true })).toBeVisible()
 
     // Textarea is visible
     await expect(page.getByPlaceholder('Paste your text here...')).toBeVisible()
