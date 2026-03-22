@@ -17,6 +17,7 @@ resource "aws_cloudfront_origin_access_control" "frontend" {
 }
 
 resource "aws_cloudfront_distribution" "frontend" {
+  aliases = ["www.clipshare.co.in"]
   enabled             = true
   default_root_object = "index.html"
 
@@ -50,7 +51,9 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:977099020493:certificate/e64a0c14-3107-40cb-bba6-b1a5eaf2428f"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   tags = { Project = "clipshare" }
