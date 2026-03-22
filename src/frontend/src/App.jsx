@@ -6,7 +6,7 @@ export default function App() {
 
   const [mode, setMode] = useState('send')
   const [text, setText] = useState('')
-  const [sessionCode] = useState(() => generateCode())
+  const [sessionCode, setSessionCode] = useState(() => generateCode())
   const [generatedCode, setGeneratedCode] = useState('')
   const [inputCode, setInputCode] = useState('')
   const [receivedText, setReceivedText] = useState('')
@@ -29,6 +29,13 @@ export default function App() {
     } catch (err) {
       setStatus('Error: ' + err.message)
     }
+  }
+
+  function handleSendAnother() {
+    setGeneratedCode('')
+    setSessionCode(generateCode())
+    setStatus('')
+    setText('')
   }
 
   async function handleReceive() {
@@ -72,15 +79,19 @@ export default function App() {
 
       {mode === 'send' && (
         <div>
-          <textarea
-            rows={6}
-            placeholder="Paste your text here..."
-            value={text}
-            onChange={e => setText(e.target.value)}
-            style={{ width: '100%', marginBottom: '8px', padding: '8px' }}
-          />
-          <p style={{ color: '#999', fontSize: '12px' }}>{text.length} characters</p>
-          <button onClick={handleSend}>Encrypt and Send</button>
+          {!generatedCode && (
+            <>
+              <textarea
+                rows={6}
+                placeholder="Paste your text here..."
+                value={text}
+                onChange={e => setText(e.target.value)}
+                style={{ width: '100%', marginBottom: '8px', padding: '8px' }}
+              />
+              <p style={{ color: '#999', fontSize: '12px' }}>{text.length} characters</p>
+              <button onClick={handleSend}>Encrypt and Send</button>
+            </>
+          )}
 
           {generatedCode && (
             <div style={{ marginTop: '24px', padding: '16px', background: '#f0f0f0', borderRadius: '8px' }}>
@@ -108,6 +119,21 @@ export default function App() {
               <p style={{ color: '#666', fontSize: '13px' }}>
                 Share this with the recipient. Expires in 30 minutes.
               </p>
+              <button
+                onClick={handleSendAnother}
+                style={{
+                  marginTop: '12px',
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  background: '#333',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '13px'
+                }}
+              >
+                Send Another
+              </button>
             </div>
           )}
         </div>
@@ -160,6 +186,25 @@ export default function App() {
                 value={receivedText}
                 style={{ width: '100%', padding: '8px', background: '#f9f9f9' }}
               />
+              <button
+                onClick={() => {
+                  setReceivedText('')
+                  setInputCode('')
+                  setStatus('')
+                }}
+                style={{
+                  marginTop: '12px',
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  background: '#333',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '13px'
+                }}
+              >
+                Receive Another
+              </button>
             </div>
           )}
         </div>
@@ -206,7 +251,7 @@ export default function App() {
             You will see only ciphertext in the request. Your plaintext never leaves the browser.
           </div>
           <p style={{ fontSize: '13px', color: '#999', marginTop: '16px', textAlign: 'center' }}>
-            Open source on GitHub {' '}
+            Open source on GitHub{' '}
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#0077b6' }}>
               view the code
             </a>
