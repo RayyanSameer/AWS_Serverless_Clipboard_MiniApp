@@ -5,7 +5,7 @@ import { sendToLambda, getFromLambda } from './api.js'
 export default function App() {
 
   const [mode, setMode] = useState('send')
-  const [text, setText] = useState('') 
+  const [text, setText] = useState('')
   const [sessionCode] = useState(() => generateCode())
   const [generatedCode, setGeneratedCode] = useState('')
   const [inputCode, setInputCode] = useState('')
@@ -13,6 +13,8 @@ export default function App() {
   const [status, setStatus] = useState('')
   const [showCode, setShowCode] = useState(false)
   const [fetching, setFetching] = useState(false)
+
+  const GITHUB_URL = 'https://github.com/RayyanSameer/AWS-Serverless-ClipShare-Application'
 
   async function handleSend() {
     if (!text.trim()) { setStatus('Nothing to send.'); return }
@@ -29,7 +31,6 @@ export default function App() {
     }
   }
 
-  
   async function handleReceive() {
     if (fetching) return
     if (!inputCode.trim()) { setStatus('Enter a session code first.'); return }
@@ -54,7 +55,6 @@ export default function App() {
       <h1>ClipShare</h1>
       <p style={{ color: '#666' }}>Zero knowledge. End-to-end encrypted. Expires in 30 minutes.</p>
 
-      {/* Mode toggle */}
       <div style={{ marginBottom: '24px' }}>
         <button
           onClick={() => setMode('send')}
@@ -70,7 +70,6 @@ export default function App() {
         </button>
       </div>
 
-      {/* Sender */}
       {mode === 'send' && (
         <div>
           <textarea
@@ -86,7 +85,26 @@ export default function App() {
           {generatedCode && (
             <div style={{ marginTop: '24px', padding: '16px', background: '#f0f0f0', borderRadius: '8px' }}>
               <p>Your session code:</p>
-              <strong style={{ fontSize: '24px', letterSpacing: '4px' }}>{generatedCode}</strong>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <strong style={{ fontSize: '24px', letterSpacing: '4px' }}>{generatedCode}</strong>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(generatedCode)
+                    setStatus('Code copied!')
+                    setTimeout(() => setStatus('Sent.'), 2000)
+                  }}
+                  style={{
+                    padding: '4px 12px',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    background: '#fff',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                >
+                  Copy
+                </button>
+              </div>
               <p style={{ color: '#666', fontSize: '13px' }}>
                 Share this with the recipient. Expires in 30 minutes.
               </p>
@@ -95,7 +113,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Recipient */}
       {mode === 'receive' && (
         <div>
           <div style={{ position: 'relative' }}>
@@ -148,12 +165,56 @@ export default function App() {
         </div>
       )}
 
-      {/* Status indicator */}
       {status && (
         <p style={{ marginTop: '16px', color: status.startsWith('Error') ? 'red' : '#333' }}>
           {status}
         </p>
       )}
+
+      <div style={{
+        marginTop: '48px',
+        padding: '24px',
+        background: '#f8f9fa',
+        borderRadius: '8px',
+        borderTop: '3px solid #e0e0e0'
+      }}>
+        <h3 style={{ marginBottom: '16px', fontSize: '16px', color: '#333', textAlign: 'center' }}>
+          How ClipShare Works
+        </h3>
+        <div style={{ maxWidth: '480px', margin: '0 auto' }}>
+          <p style={{ fontSize: '14px', color: '#555', marginBottom: '12px' }}>
+            <strong>Sending:</strong> Your browser encrypts your text locally using AES-256
+            before anything leaves your device. Only ciphertext is sent to the server.
+          </p>
+          <p style={{ fontSize: '14px', color: '#555', marginBottom: '12px' }}>
+            <strong>Receiving:</strong> Your browser fetches the encrypted data and decrypts
+            it locally. The server never sees your plaintext.
+          </p>
+          <p style={{ fontSize: '14px', color: '#555', marginBottom: '12px' }}>
+            <strong>Expiry:</strong> All data is automatically deleted after 30 minutes.
+          </p>
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: '6px',
+            fontSize: '13px',
+            color: '#666'
+          }}>
+            Verify it yourself: Open DevTools, go to the Network tab, send a message.
+            You will see only ciphertext in the request. Your plaintext never leaves the browser.
+          </div>
+          <p style={{ fontSize: '13px', color: '#999', marginTop: '16px', textAlign: 'center' }}>
+            Open source on GitHub —{' '}
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#0077b6' }}>
+              view the code
+            </a>
+            {' '}· Built by Rayyan · {new Date().getFullYear()}
+          </p>
+        </div>
+      </div>
+
     </div>
   )
 }
