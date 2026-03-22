@@ -206,7 +206,7 @@ export default function App() {
             You will see only ciphertext in the request. Your plaintext never leaves the browser.
           </div>
           <p style={{ fontSize: '13px', color: '#999', marginTop: '16px', textAlign: 'center' }}>
-            Open source on GitHub —{' '}
+            Open source on GitHub {' '}
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#0077b6' }}>
               view the code
             </a>
