@@ -21,6 +21,12 @@ resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   default_root_object = "index.html"
 
+  logging_config {
+  bucket          = aws_s3_bucket.logging.bucket_regional_domain_name
+  include_cookies = false
+  prefix          = "cloudfront/"
+}
+
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
     origin_id                = "clipshare-s3-origin"
@@ -39,7 +45,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     }
   }
 
-  # SPA routing — send all 404s to index.html
+  # 
   custom_error_response {
     error_code         = 404
     response_code      = 200
