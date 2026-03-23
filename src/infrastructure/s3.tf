@@ -5,6 +5,42 @@ resource "aws_s3_bucket" "frontend" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "logging" {
+  bucket = aws_s3_bucket.logging.id
+
+  rule {
+    id     = "expire-old-logs"
+    status = "Enabled"
+
+    filter {
+      prefix = "cloudfront/"
+    }
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+
+  rule {
+    id     = "expire-athena-results"
+    status = "Enabled"
+
+    filter {
+      prefix = "athena-results/"
+    }
+
+    expiration {
+      days = 30
+    }
+  }
+}
+
+
+
 resource "aws_cloudfront_origin_access_control" "frontend" {
   name                              = "clipshare-oac"
   origin_access_control_origin_type = "s3"
@@ -52,6 +88,8 @@ resource "aws_cloudfront_distribution" "frontend" {
       cookies { forward = "none" }
     }
   }
+ 
+  
 
   custom_error_response {
     error_code         = 404
@@ -89,6 +127,7 @@ resource "aws_s3_bucket_policy" "frontend" {
     }]
   })
 }
+
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
   bucket                  = aws_s3_bucket.frontend.id
