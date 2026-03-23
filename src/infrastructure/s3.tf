@@ -1,13 +1,9 @@
 resource "aws_s3_bucket" "frontend" {
   bucket = "clipshare-frontend-rayyan"
-
   tags = {
     Project = "clipshare"
   }
 }
-
-
-//now as per the roadmap i had devised , i'm gonna add a CDN here to help others see this 
 
 resource "aws_cloudfront_origin_access_control" "frontend" {
   name                              = "clipshare-oac"
@@ -16,16 +12,29 @@ resource "aws_cloudfront_origin_access_control" "frontend" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_s3_bucket_ownership_controls" "logging" {
+  bucket = aws_s3_bucket.logging.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "logging" {
+  depends_on = [aws_s3_bucket_ownership_controls.logging]
+  bucket     = aws_s3_bucket.logging.id
+  acl        = "log-delivery-write"
+}
+
 resource "aws_cloudfront_distribution" "frontend" {
-  aliases = ["www.clipshare.co.in"]
+  aliases             = ["www.clipshare.co.in"]
   enabled             = true
   default_root_object = "index.html"
 
   logging_config {
-  bucket          = aws_s3_bucket.logging.bucket_regional_domain_name
-  include_cookies = false
-  prefix          = "cloudfront/"
-}
+    bucket          = aws_s3_bucket.logging.bucket_regional_domain_name
+    include_cookies = false
+    prefix          = "cloudfront/"
+  }
 
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
@@ -38,14 +47,12 @@ resource "aws_cloudfront_distribution" "frontend" {
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-
     forwarded_values {
       query_string = false
       cookies { forward = "none" }
     }
   }
 
-  # 
   custom_error_response {
     error_code         = 404
     response_code      = 200
@@ -65,7 +72,6 @@ resource "aws_cloudfront_distribution" "frontend" {
   tags = { Project = "clipshare" }
 }
 
-# Allow CloudFront to read from S3
 resource "aws_s3_bucket_policy" "frontend" {
   bucket = aws_s3_bucket.frontend.id
   policy = jsonencode({
