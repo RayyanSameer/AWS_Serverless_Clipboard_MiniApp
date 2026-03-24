@@ -14,7 +14,7 @@ export default function App() {
   const [showCode, setShowCode] = useState(false)
   const [fetching, setFetching] = useState(false)
 
-  const GITHUB_URL = 'https://github.com/RayyanSameer/AWS_Serverless_Clipboard_MiniApp'
+  const GITHUB_URL = 'https://github.com/RayyanSameer/AWS-Serverless-ClipShare-Application'
 
   async function handleSend() {
     if (!text.trim()) { setStatus('Nothing to send.'); return }
@@ -116,8 +116,11 @@ export default function App() {
                   Copy
                 </button>
               </div>
+              <p style={{ color: 'red', fontSize: '13px', marginTop: '8px', fontWeight: 'bold' }}>
+                Only share this code with the intended recipient.
+              </p>
               <p style={{ color: '#666', fontSize: '13px' }}>
-                Share this with the recipient. Expires in 30 minutes.
+                Expires in 30 minutes.
               </p>
               <button
                 onClick={handleSendAnother}
@@ -186,25 +189,44 @@ export default function App() {
                 value={receivedText}
                 style={{ width: '100%', padding: '8px', background: '#f9f9f9' }}
               />
-              <button
-                onClick={() => {
-                  setReceivedText('')
-                  setInputCode('')
-                  setStatus('')
-                }}
-                style={{
-                  marginTop: '12px',
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  background: '#333',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  fontSize: '13px'
-                }}
-              >
-                Receive Another
-              </button>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(receivedText)
+                    setStatus('Message copied!')
+                    setTimeout(() => setStatus(''), 2000)
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    background: '#0077b6',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '13px'
+                  }}
+                >
+                  Copy Message
+                </button>
+                <button
+                  onClick={() => {
+                    setReceivedText('')
+                    setInputCode('')
+                    setStatus('')
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    background: '#333',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '13px'
+                  }}
+                >
+                  Receive Another
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -216,8 +238,42 @@ export default function App() {
         </p>
       )}
 
+      {/* How to use */}
       <div style={{
         marginTop: '48px',
+        padding: '24px',
+        background: '#f0f7ff',
+        borderRadius: '8px',
+        borderTop: '3px solid #0077b6'
+      }}>
+        <h3 style={{ marginBottom: '20px', fontSize: '16px', color: '#333', textAlign: 'center' }}>
+          How to Use ClipShare
+        </h3>
+        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <p style={{ fontWeight: 'bold', color: '#0077b6', marginBottom: '8px', fontSize: '14px' }}>
+              Sending a message
+            </p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>1. Paste your text in the box</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>2. Click Encrypt and Send</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>3. Copy the session code</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>4. Share the code with the recipient</p>
+          </div>
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <p style={{ fontWeight: 'bold', color: '#0077b6', marginBottom: '8px', fontSize: '14px' }}>
+              Receiving a message
+            </p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>1. Click Receive</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>2. Enter the session code</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>3. Click Get Message</p>
+            <p style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>4. Your message appears decrypted</p>
+          </div>
+        </div>
+      </div>
+
+      {/* How it works technical */}
+      <div style={{
+        marginTop: '24px',
         padding: '24px',
         background: '#f8f9fa',
         borderRadius: '8px',
