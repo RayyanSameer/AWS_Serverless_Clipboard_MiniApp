@@ -2,7 +2,7 @@
 
 **A zero-knowledge, end-to-end encrypted, serverless, ephemeral clipboard sharing application.**
 
-**Live:** https://clipshare.online
+**Live:** https://www.clipshare.co.in/
 
 ![ClipShare Screenshot](./docs/Clipshare_Screenshot.png)
 
