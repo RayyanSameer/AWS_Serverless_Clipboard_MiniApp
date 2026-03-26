@@ -52,7 +52,7 @@ test.describe('ClipShare E2E', () => {
 
     // RECIPIENT — switch to receive mode and enter code
     await recipientPage.goto('/')
-    await recipientPage.getByText('Receive').click()
+    await recipientPage.getByRole('button', { name: 'Receive' }).click()
     await recipientPage.getByPlaceholder('Enter session code').fill(code)
     await recipientPage.getByText('Get Message').click()
 
