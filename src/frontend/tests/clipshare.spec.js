@@ -22,7 +22,7 @@ test.describe('ClipShare E2E', () => {
     await page.getByPlaceholder('Paste your text here...').fill('hello from test')
 
     // Click send
-    await page.getByText('Encrypt and Send').click()
+    await page.getByRole('button', { name: 'Encrypt and Send' }).click()
 
     // Wait for status to show Sent
     await expect(page.getByText('Sent.')).toBeVisible({ timeout: 10000 })
@@ -44,7 +44,7 @@ test.describe('ClipShare E2E', () => {
     // SENDER — send a message
     await senderPage.goto('/')
     await senderPage.getByPlaceholder('Paste your text here...').fill('e2e test message')
-    await senderPage.getByText('Encrypt and Send').click()
+    await senderPage.getByRole('button', { name: 'Encrypt and Send' }).click()
     await expect(senderPage.getByText('Sent.')).toBeVisible({ timeout: 10000 })
 
     // Get the session code from sender's page
@@ -67,16 +67,16 @@ test.describe('ClipShare E2E', () => {
 
   test('wrong session code shows error', async ({ page }) => {
     await page.goto('/')
-    await page.getByText('Receive').click()
+    await page.getByRole('button', { name: 'Receive' }).click()
     await page.getByPlaceholder('Enter session code').fill('FAKECODE')
-    await page.getByText('Get Message').click()
+    await page.getByRole('button', { name: 'Get Message' }).click()
 
     await expect(page.getByText(/Error/)).toBeVisible({ timeout: 10000 })
   })
 
   test('empty text shows validation message', async ({ page }) => {
     await page.goto('/')
-    await page.getByText('Encrypt and Send').click()
+    await page.getByRole('button', { name: 'Encrypt and Send' }).click()
     await expect(page.getByText('Nothing to send.')).toBeVisible()
   })
 
