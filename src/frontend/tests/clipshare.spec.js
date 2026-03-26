@@ -54,7 +54,7 @@ test.describe('ClipShare E2E', () => {
     await recipientPage.goto('/')
     await recipientPage.getByRole('button', { name: 'Receive' }).click()
     await recipientPage.getByPlaceholder('Enter session code').fill(code)
-    await recipientPage.getByText('Get Message').click()
+    await recipientPage.getByRole('button', { name: 'Get Message' }).click()
 
     // Wait for decrypted message to appear
     await expect(
