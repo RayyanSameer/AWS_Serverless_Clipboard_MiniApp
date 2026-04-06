@@ -14,7 +14,7 @@ export default function App() {
   const [showCode, setShowCode] = useState(false)
   const [fetching, setFetching] = useState(false)
 
-  const GITHUB_URL = ''
+  const GITHUB_URL = 'https://github.com/RayyanSameer/AWS_Serverless_Clipboard_MiniApp'
 
   async function handleSend() {
     if (!text.trim()) { setStatus('Nothing to send.'); return }
